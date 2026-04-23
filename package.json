@@ -20,4 +20,590 @@
     "postcss": "latest",
     "autoprefixer": "latest"
   }
+}import Head from "next/head";
+import { useState } from "react";
+
+export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResult, setSearchResult] = useState(null);
+
+  const popularSearches = ["Droits du locataire", "Pension alimentaire", "Garde d'enfants", "Infractions routières"];
+
+  const legalResults = {
+    "droits du locataire": [
+      { art: "Art. 1851 CC", title: "Code civil du Québec", text: "Le bail est le contrat par lequel une personne, le locateur, s'engage envers une autre personne, le locataire, à lui procurer, moyennant un loyer, la jouissance d'un bien.", simple: "Cet article définit le bail et les obligations de base du locateur envers le locataire." },
+      { art: "Art. 1864 CC", title: "Code civil du Québec", text: "Le locateur est tenu de garantir au locataire la jouissance paisible du bien pendant toute la durée du bail.", simple: "Le locateur doit s'assurer que le locataire peut utiliser son logement sans problème pendant toute la durée du bail." }
+    ],
+    "pension alimentaire": [
+      { art: "Art. 585 CC", title: "Code civil du Québec", text: "Les époux, les conjoints unis civilement et les parents en ligne directe au premier degré se doivent des aliments.", simple: "Cet article établit l'obligation alimentaire entre époux, conjoints unis civilement et parents proches." },
+      { art: "Art. 587 CC", title: "Code civil du Québec", text: "Les aliments sont accordés en tenant compte des besoins et des facultés des parties.", simple: "Le montant de la pension est calculé selon les besoins du demandeur et les capacités financières du payeur." }
+    ],
+    "garde d'enfants": [
+      { art: "Art. 33 LPJ", title: "Loi sur la Protection de la Jeunesse", text: "Les droits de l'enfant sont exercés par lui-même en proportion de son âge et de son discernement.", simple: "Cet article reconnaît à l'enfant le droit d'exercer ses propres droits en fonction de sa maturité." },
+      { art: "Art. 1457 CC", title: "Code civil du Québec", text: "Toute personne a le devoir de respecter les règles de conduite qui, suivant les circonstances, la coutume ou la loi, s'imposent à elle.", simple: "Cet article énonce le principe général de la responsabilité civile." }
+    ],
+    "infractions routières": [
+      { art: "Art. 330 LIR", title: "Loi sur les infractions routières", text: "Nul ne peut conduire un véhicule routier à une vitesse qui met en péril la vie ou la sécurité des personnes ou des biens.", simple: "Cet article interdit toute conduite jugée dangereuse, même en l'absence de signalisation spécifique de vitesse." },
+      { art: "Art. 335 LIR", title: "Loi sur les infractions routières", text: "Il est interdit de conduire un véhicule avec les facultés affaiblies par l'alcool ou une drogue.", simple: "La conduite avec les facultés affaiblies est strictement interdite et entraîne des sanctions sévères." }
+    ]
+  };
+
+  const handleSearch = (q) => {
+    const query = (q || searchQuery).toLowerCase().trim();
+    const key = Object.keys(legalResults).find(k => query.includes(k) || k.includes(query));
+    if (key) setSearchResult(legalResults[key]);
+    else setSearchResult([{ art: "Aucun résultat", title: "", text: "", simple: "Aucun résultat trouvé pour votre recherche. Essayez un autre terme juridique." }]);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>JusticePro Québec — L'Accès à la Justice pour Tous</title>
+        <meta name="description" content="Tout ce dont vous avez besoin pour être votre propre avocat — sans quitter votre maison, sans dépenser une fortune." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+      </Head>
+
+      <style>{`
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans 3', sans-serif; background: #0d0b1a; color: #e8e0ff; line-height: 1.6; }
+        a { color: inherit; text-decoration: none; }
+
+        /* HERO */
+        .hero { background: linear-gradient(135deg, #1a0933 0%, #0d0b1a 50%, #0a1628 100%); padding: 80px 24px 60px; text-align: center; border-bottom: 1px solid #2a1f4a; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 900; background: linear-gradient(90deg, #ff6b35, #ff4da6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px; }
+        .hero-sub { font-size: 1.1rem; color: #a89fcf; max-width: 640px; margin: 0 auto 32px; }
+        .cta-btn { display: inline-block; background: linear-gradient(135deg, #ff6b35, #ff4da6); color: white; font-weight: 700; font-size: 1.05rem; padding: 14px 36px; border-radius: 50px; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(255,77,166,0.4); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,77,166,0.5); }
+
+        /* SECTIONS */
+        .section { padding: 60px 24px; max-width: 1000px; margin: 0 auto; }
+        .section-dark { background: #0f0c1f; border-top: 1px solid #2a1f4a; border-bottom: 1px solid #2a1f4a; }
+        .section-dark .section { max-width: 1000px; margin: 0 auto; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: #ff6b35; margin-bottom: 12px; }
+        h2.pink { color: #ff4da6; }
+        h2.white { color: #e8e0ff; }
+        .section-intro { color: #a89fcf; margin-bottom: 36px; font-size: 1rem; }
+
+        /* STEPS */
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; }
+        .step-card { background: #1a1433; border: 1px solid #2e2255; border-radius: 12px; padding: 20px 16px; }
+        .step-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: linear-gradient(135deg, #ff6b35, #ff4da6); border-radius: 50%; font-weight: 700; font-size: 0.85rem; margin-bottom: 10px; color: white; }
+        .step-title { font-weight: 700; color: #e8e0ff; margin-bottom: 6px; font-size: 0.9rem; }
+        .step-desc { font-size: 0.82rem; color: #8878b8; }
+
+        /* PILLARS */
+        .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
+        .pillar-card { background: #141028; border: 1px solid #2a1f4a; border-radius: 14px; padding: 24px 20px; }
+        .pillar-icon { font-size: 1.8rem; margin-bottom: 10px; }
+        .pillar-title { font-weight: 700; color: #ff6b35; margin-bottom: 8px; font-size: 1.05rem; }
+        .pillar-card ul { list-style: none; padding: 0; }
+        .pillar-card ul li { padding: 4px 0 4px 16px; font-size: 0.88rem; color: #c4b8e8; position: relative; }
+        .pillar-card ul li::before { content: "•"; color: #ff6b35; position: absolute; left: 0; }
+
+        /* MISSION */
+        .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+        .mission-box { background: #1a1433; border-radius: 12px; padding: 24px; border: 1px solid #2e2255; }
+        .mission-box h3 { color: #e8e0ff; margin-bottom: 12px; font-size: 1.05rem; }
+        .mission-box p { font-size: 0.92rem; color: #a89fcf; margin-bottom: 10px; }
+        .accomplir-title { color: #ff4da6; font-weight: 700; margin-bottom: 10px; font-size: 1rem; }
+        .accomplir-list { list-style: none; padding: 0; }
+        .accomplir-list li { padding: 5px 0 5px 18px; font-size: 0.92rem; color: #c4b8e8; font-weight: 600; position: relative; }
+        .accomplir-list li::before { content: "•"; color: #ff4da6; position: absolute; left: 0; }
+
+        /* RESOURCES */
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .res-title { color: #ff6b35; font-weight: 700; margin-bottom: 12px; font-size: 1rem; }
+        .res-title.blue { color: #4da6ff; }
+        .res-list { list-style: none; padding: 0; }
+        .res-list li { padding: 6px 0; font-size: 0.92rem; color: #c4b8e8; border-bottom: 1px solid #1e1838; }
+        .res-list li strong { color: #ff6b35; }
+        .green-banner { background: #1a3d1a; border: 1px solid #2d6b2d; border-radius: 10px; padding: 16px 22px; margin-top: 24px; color: #a8e6a8; font-weight: 600; font-size: 0.92rem; }
+
+        /* COURT TYPES */
+        .court-list { display: flex; flex-direction: column; gap: 14px; }
+        .court-item { background: #141028; border: 1px solid #2a1f4a; border-radius: 10px; padding: 18px 20px; display: flex; gap: 20px; align-items: flex-start; }
+        .court-num { min-width: 32px; height: 32px; background: linear-gradient(135deg, #ff6b35, #ff4da6); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: white; }
+        .court-title { font-weight: 700; color: #ff6b35; margin-bottom: 4px; }
+        .court-desc { font-size: 0.9rem; color: #c4b8e8; }
+
+        /* PROC CATEGORIES */
+        .proc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .proc-cat { padding: 8px 0; }
+        .proc-cat-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .proc-cat-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+        .proc-cat-title.orange { color: #ff6b35; }
+        .proc-cat-title.blue { color: #4da6ff; }
+        .proc-cat-title.green { color: #4dff9a; }
+        .proc-cat-title.pink { color: #ff4da6; }
+        .proc-cat-desc { font-size: 0.88rem; color: #a89fcf; }
+
+        /* PROC LIST */
+        .proc-list { display: flex; flex-direction: column; gap: 10px; }
+        .proc-item { background: #141028; border: 1px solid #2a1f4a; border-radius: 8px; padding: 14px 18px; display: flex; gap: 18px; align-items: flex-start; }
+        .proc-item-num { min-width: 30px; height: 30px; background: #2a1f4a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #ff6b35; }
+        .proc-item-title { font-weight: 700; color: #ff6b35; margin-bottom: 3px; font-size: 0.95rem; }
+        .proc-item-desc { font-size: 0.85rem; color: #a89fcf; }
+
+        /* DEPOSABLE CARDS */
+        .depo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .depo-card { background: #1a1433; border: 1px solid #2e2255; border-radius: 12px; padding: 20px 16px; }
+        .depo-icon { font-size: 1.6rem; margin-bottom: 10px; }
+        .depo-title { font-weight: 700; color: #ff4da6; margin-bottom: 6px; font-size: 0.95rem; }
+        .depo-desc { font-size: 0.83rem; color: #a89fcf; }
+
+        /* TABLE */
+        .proc-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .proc-table th { background: #1a1433; color: #ff6b35; padding: 12px 14px; text-align: left; border: 1px solid #2e2255; font-weight: 700; }
+        .proc-table td { padding: 12px 14px; border: 1px solid #1e1838; color: #c4b8e8; vertical-align: top; }
+        .proc-table tr:nth-child(even) td { background: #100d22; }
+        .proc-table tr:nth-child(odd) td { background: #0d0b1a; }
+        .td-title { color: #ff6b35; font-weight: 700; }
+        .td-title.blue { color: #4da6ff; }
+        .td-title.green { color: #4dff9a; }
+        .td-title.pink { color: #ff4da6; }
+        .td-title.purple { color: #c084fc; }
+
+        /* LAWS */
+        .laws-list { display: flex; flex-direction: column; gap: 14px; }
+        .law-card { background: #141028; border: 1px solid #2a1f4a; border-radius: 10px; padding: 20px 20px; display: flex; gap: 18px; }
+        .law-num { min-width: 32px; height: 32px; background: #2a1f4a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #ff6b35; }
+        .law-title { font-weight: 700; color: #ff6b35; margin-bottom: 4px; font-size: 0.95rem; }
+        .law-domain { color: #a89fcf; font-size: 0.85rem; margin-bottom: 8px; }
+        .law-articles-title { font-weight: 700; color: #e8e0ff; font-size: 0.88rem; margin-bottom: 6px; }
+        .law-articles { list-style: none; padding: 0; }
+        .law-articles li { padding: 3px 0 3px 16px; font-size: 0.85rem; color: #c4b8e8; position: relative; }
+        .law-articles li::before { content: "•"; color: #ff4da6; position: absolute; left: 0; }
+        .law-link { color: #ff4da6; font-weight: 700; font-size: 0.85rem; margin-top: 8px; display: inline-block; cursor: pointer; }
+
+        /* SEARCH */
+        .search-section { background: #0d1a2e; border: 1px solid #1a2e4a; border-radius: 14px; padding: 32px 28px; margin-bottom: 32px; }
+        .search-label { color: #4da6ff; font-weight: 600; font-size: 0.9rem; margin-bottom: 10px; display: block; }
+        .search-input { width: 100%; background: #0d0b1a; border: 1px solid #2a1f4a; border-radius: 8px; padding: 14px 16px; font-size: 1rem; color: #e8e0ff; outline: none; font-family: inherit; margin-bottom: 14px; }
+        .search-input::placeholder { color: #4a3d6e; }
+        .search-input:focus { border-color: #ff4da6; }
+        .search-btn { background: #ff4da6; color: white; border: none; border-radius: 8px; padding: 12px 28px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
+        .search-btn:hover { background: #e0408f; }
+        .popular-title { color: #ff6b35; font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; text-align: center; }
+        .popular-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 32px; }
+        .popular-tag { background: #2a0f1f; border: 1px solid #ff4da6; color: #ff4da6; font-weight: 700; font-size: 0.8rem; padding: 6px 14px; border-radius: 4px; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase; transition: background 0.2s; }
+        .popular-tag:hover { background: #3d0f28; }
+        .results-title { color: #ff4da6; font-weight: 700; font-size: 1.3rem; margin-bottom: 20px; text-align: center; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .result-card { background: #0d0b1a; border-left: 3px solid #ff4da6; padding: 20px; border-radius: 6px; }
+        .result-art { color: #ff6b35; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+        .result-text-label { font-weight: 700; color: #e8e0ff; font-size: 0.85rem; margin-bottom: 4px; }
+        .result-text { font-size: 0.85rem; color: #a89fcf; margin-bottom: 12px; font-style: italic; }
+        .result-simple-label { font-weight: 700; color: #e8e0ff; font-size: 0.85rem; margin-bottom: 4px; }
+        .result-simple { font-size: 0.85rem; color: #c4b8e8; margin-bottom: 14px; }
+        .consult-btn { background: transparent; border: 1px solid #ff4da6; color: #ff4da6; font-weight: 700; font-size: 0.85rem; padding: 8px 18px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        .consult-btn:hover { background: #2a0f1f; }
+        .tip-banner { background: #0a1628; border: 1px solid #1a2e4a; border-radius: 8px; padding: 14px 18px; margin-top: 24px; color: #4da6ff; font-size: 0.88rem; }
+
+        /* FOOTER CTA */
+        .footer-cta { text-align: center; background: linear-gradient(135deg, #1a0933, #0a1628); padding: 60px 24px; border-top: 1px solid #2a1f4a; }
+        .footer-cta h2 { color: #e8e0ff; margin-bottom: 10px; font-size: 1.6rem; }
+        .footer-cta p { color: #a89fcf; margin-bottom: 28px; }
+        footer { background: #080612; padding: 24px; text-align: center; color: #4a3d6e; font-size: 0.85rem; border-top: 1px solid #1a1433; }
+
+        /* RESPONSIVE */
+        @media (max-width: 640px) {
+          .logo { font-size: 1.9rem; }
+          h2 { font-size: 1.4rem; }
+          .mission-grid, .res-grid, .proc-grid, .results-grid { grid-template-columns: 1fr; }
+          .proc-table { font-size: 0.78rem; }
+          .proc-table th, .proc-table td { padding: 8px 10px; }
+        }
+        @media (max-width: 480px) {
+          .steps-grid { grid-template-columns: 1fr 1fr; }
+          .pillars-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
+
+      {/* ── HERO ── */}
+      <div className="hero">
+        <div className="logo">⚖️ JusticePro Québec</div>
+        <p className="hero-sub">Tout ce dont vous avez besoin pour être votre propre avocat — sans quitter votre maison, sans dépenser une fortune.</p>
+        <button className="cta-btn">Commencer maintenant</button>
+      </div>
+
+      {/* ── VIDÉO D'INTRODUCTION ── */}
+      <div className="section">
+        <h2>🎬 Vidéo d'Introduction — 5 Minutes</h2>
+        <p className="section-intro">Découvrez JusticePro Québec en seulement 5 minutes. Cette vidéo vous guidera à travers les fonctionnalités clés de notre plateforme, conçue pour révolutionner votre pratique juridique.</p>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <button className="cta-btn">▶ Regarder la vidéo</button>
+        </div>
+        <p style={{ fontWeight: 700, color: "#e8e0ff", marginBottom: 16 }}>Ce que vous apprendrez :</p>
+        <div className="steps-grid">
+          {[
+            { n: 1, title: "JusticePro Québec Expliqué", desc: "Découvrez notre mission : simplifier l'accès au droit et aux procédures pour tous les Québécois." },
+            { n: 2, title: "Les 4 Grilles Principales", desc: "Explorez nos sections dédiées aux Procédures, Lois, Paiements et Services." },
+            { n: 3, title: "Fonctionnement Détaillé", desc: "Voyez une démonstration rapide de l'interface et apprenez à naviguer facilement." },
+            { n: 4, title: "Tarifs d'Abonnement", desc: "Informez-vous sur nos différentes formules d'abonnement, adaptées à tous les budgets." },
+            { n: 5, title: "Pourquoi Choisir JusticePro", desc: "Comprenez les avantages uniques que JusticePro Québec offre pour booster votre productivité." },
+          ].map(s => (
+            <div className="step-card" key={s.n}>
+              <div className="step-num">{s.n}</div>
+              <div className="step-title">{s.title}</div>
+              <div className="step-desc">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── 6 PILIERS ── */}
+      <div className="section-dark">
+        <div className="section">
+          <h2>🏆 Tout Ce Que Ce Site Vous Offre — 6 Piliers Pour Votre Succès</h2>
+          <p className="section-intro">Avant de vous inscrire, découvrez exactement comment nous transformons votre situation juridique en victoire.</p>
+          <div className="pillars-grid">
+            <div className="pillar-card">
+              <div className="pillar-icon">📋</div>
+              <div className="pillar-title">📚 Grilles complètes de procédures</div>
+              <ul>
+                <li>Toutes les procédures judiciaires : jeunesse, familiale, criminel, logement, civil, administratif, appel, exécution</li>
+                <li>Procédures déposables à la cour : rétractation, modification de garde, mise en demeure, et plus</li>
+                <li>Explications claires : comment, quand, pourquoi, délais et coûts</li>
+              </ul>
+            </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">⚖️</div>
+              <div className="pillar-title">⚖️ Lois & codes à jour</div>
+              <ul>
+                <li>LPJ, Charte des droits et libertés, Code criminel, Code civil, CPC, CPP</li>
+                <li>Recherche IA intelligente : tapez votre question, trouvez l'article de loi en 10 secondes</li>
+                <li>Articles expliqués en langage simple</li>
+              </ul>
+            </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">🤖</div>
+              <div className="pillar-title">🤖 IA juridique magique</div>
+              <ul>
+                <li>Téléversez vos documents (500 MB max)</li>
+                <li>L'IA rédige votre dossier complet et conforme</li>
+                <li>Fonction spéciale : génère automatiquement les questions pour vos témoins</li>
+                <li>Export PDF prêt à déposer au greffe</li>
+              </ul>
+            </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">📹</div>
+              <div className="pillar-title">📹 Vidéos & clavardage</div>
+              <ul>
+                <li>Chaînes vidéo recommandées : Droit Pour Tous, Easy Droit, etc.</li>
+                <li>Clavardage assisté 24/7 pour vos questions</li>
+                <li>Orientation personnalisée</li>
+              </ul>
+            </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">💳</div>
+              <div className="pillar-title">💳 Gestion des paiements simple</div>
+              <ul>
+                <li>Abonnement mensuel ou annuel</li>
+                <li>Stripe, Square, Interac acceptés</li>
+                <li>Transparent : pas de frais cachés</li>
+                <li>Accès immédiat après paiement</li>
+              </ul>
+            </div>
+            <div className="pillar-card">
+              <div className="pillar-icon">🎯</div>
+              <div className="pillar-title">🎯 Services complémentaires</div>
+              <ul>
+                <li>Huissiers, expertises, mandats</li>
+                <li>Greffe gratuit</li>
+                <li>Tous les liens essentiels en un seul endroit</li>
+              </ul>
+            </div>
+          </div>
+          <div style={{ textAlign: "center", marginTop: 36 }}>
+            <p style={{ color: "#a89fcf", fontStyle: "italic", fontSize: "0.95rem" }}>✅ Tout ce dont vous avez besoin pour être votre propre avocat — sans quitter votre maison, sans dépenser une fortune.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── NOTRE MISSION ── */}
+      <div className="section">
+        <h2>🌟 Notre Mission : L'Accès à la Justice pour Tous</h2>
+        <div className="mission-grid">
+          <div className="mission-box">
+            <h3>Pourquoi ce site existe</h3>
+            <p>Dans les régions éloignées du Québec — Côte-Nord, Gaspésie, Abitibi — trouver un avocat est souvent impossible. Trop cher, trop loin, ou simplement absent. Et l'aide juridique, bien que précieuse, ne répond pas toujours aux besoins réels des citoyens.</p>
+            <p>Ce site est né de cette réalité. Chaque citoyen mérite de comprendre ses droits, de préparer ses recours, et de se présenter devant le tribunal en étant pleinement prêt.</p>
+          </div>
+          <div className="mission-box">
+            <div className="accomplir-title">Ce que vous pourrez accomplir</div>
+            <ul className="accomplir-list">
+              <li>Déposer vos procédures au greffe vous-même</li>
+              <li>Rédiger une défense complète avec l'IA</li>
+              <li>Préparer une audience ou un appel</li>
+              <li>Comprendre vos droits en matière criminelle</li>
+              <li>Être votre propre représentant légal</li>
+              <li>Accéder à tous les services complémentaires</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* ── SITES D'AIDE JURIDIQUE ── */}
+      <div className="section-dark">
+        <div className="section">
+          <h2>🏛️ Sites d'Aide Juridique & Documents Officiels</h2>
+          <p className="section-intro">Toutes les ressources officielles et gratuites du Québec et du Canada, triées par catégorie pour vous guider rapidement.</p>
+          <div className="res-grid">
+            <div>
+              <div className="res-title">🏛️ Organismes d'aide juridique</div>
+              <ul className="res-list">
+                <li><strong>Aide juridique Québec</strong> — représentation gratuite sous conditions</li>
+                <li><strong>Éducaloi</strong> — explication vulgarisée du droit québécois</li>
+                <li><strong>Centre de justice de proximité</strong> — orientation et accompagnement</li>
+                <li><strong>Justice Québec</strong> — portail officiel du ministère</li>
+                <li><strong>Cliniques juridiques universitaires</strong> — aide gratuite par étudiants supervisés</li>
+                <li><strong>Barreau du Québec</strong> — référencement d'avocats</li>
+              </ul>
+            </div>
+            <div>
+              <div className="res-title blue">📄 Documents & Formulaires Judiciaires</div>
+              <ul className="res-list">
+                <li><strong>SOQUIJ</strong> — jurisprudence québécoise complète</li>
+                <li><strong>LégisQuébec</strong> — lois et règlements officiels</li>
+                <li><strong>Canlii.org</strong> — base de données juridique gratuite</li>
+                <li><strong>Justice.gc.ca</strong> — formulaires fédéraux</li>
+                <li><strong>Greffe en ligne</strong> — dépôt électronique de procédures</li>
+                <li><strong>Jugements.qc.ca</strong> — décisions des tribunaux québécois</li>
+              </ul>
+            </div>
+          </div>
+          <div className="green-banner">✅ Ces ressources sont entièrement gratuites. Elles sont mises à jour régulièrement et constituent votre premier outil de recherche juridique autonome.</div>
+        </div>
+      </div>
+
+      {/* ── PROCÉDURES JUDICIAIRES : QUEL RECOURS ── */}
+      <div className="section">
+        <h2>⚖️ Procédures Judiciaires : Quel Recours Pour Vous ?</h2>
+        <p className="section-intro">Identifiez l'instance qui correspond à votre situation et découvrez chaque étape de votre démarche, de A à Z.</p>
+        <div className="court-list">
+          {[
+            { title: "Cour du Québec — Première Instance", desc: "Litiges civils jusqu'à 85 000$, droit de la famille, petites créances. Idéal pour réclamations locatives, garde d'enfants, ou dommages corporels mineurs. Formulaires simplifiés disponibles." },
+            { title: "Cour Supérieure du Québec", desc: "Dossiers complexes dépassant 85 000$, divorces, injonctions, recours collectifs. Procédure plus formelle exigeant des actes de procédure structurés selon le Code de procédure civile." },
+            { title: "Cour d'Appel du Québec", desc: "Contestez un jugement rendu en première instance. Délai de 30 jours. L'appelant doit démontrer une erreur de droit ou de fait déterminante. Mémoire d'appel requis." },
+            { title: "Défense en Matière Criminelle", desc: "Réponse à une accusation criminelle : préparation de la défense, divulgation de la preuve, droit au silence, contre-interrogatoire. Charte canadienne des droits et libertés pleinement applicable." },
+            { title: "Préparation à une Audience", desc: "Préparation des pièces, témoins, argumentation, tenue vestimentaire et protocole. Répétition de votre exposé, maîtrise des règles de preuve et de la conduite en salle d'audience." },
+          ].map((c, i) => (
+            <div className="court-item" key={i}>
+              <div className="court-num">{i + 1}</div>
+              <div>
+                <div className="court-title">{c.title}</div>
+                <div className="court-desc">{c.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── TOUTES LES PROCÉDURES ── */}
+      <div className="section-dark">
+        <div className="section">
+          <h2>📁 Toutes les Procédures Judiciaires — Trouvez la Vôtre</h2>
+          <p className="section-intro">Naviguez à travers les différents types de procédures juridiques pour comprendre vos options et les étapes clés.</p>
+          <div className="proc-grid" style={{ marginBottom: 40 }}>
+            {[
+              { icon: "⚖️", title: "Procédures Civiles", titleClass: "orange", desc: "Ces procédures traitent des litiges entre particuliers ou organisations, hors du droit criminel." },
+              { icon: "👨‍👩‍👧", title: "Procédures Familiales", titleClass: "blue", desc: "Pour toutes les questions liées à la famille et aux relations conjugales." },
+              { icon: "🔒", title: "Procédures Criminelles", titleClass: "green", desc: "Processus liés aux accusations criminelles et à la défense des droits de l'accusé." },
+              { icon: "🧒", title: "Procédures Jeunesse", titleClass: "pink", desc: "Interventions concernant la protection des enfants ou la délinquance juvénile." },
+              { icon: "🏛️", title: "Procédures Administratives", titleClass: "orange", desc: "Recours contre des décisions d'organismes gouvernementaux ou administratifs." },
+              { icon: "↗️", title: "Procédures d'Appel", titleClass: "blue", desc: "Contester un jugement rendu en première instance." },
+              { icon: "🔨", title: "Procédures d'Exécution", titleClass: "green", desc: "Mise en œuvre concrète des jugements obtenus." },
+              { icon: "🤝", title: "Procédures Alternatives", titleClass: "pink", desc: "Modes de résolution des conflits hors des tribunaux." },
+            ].map((p, i) => (
+              <div className="proc-cat" key={i}>
+                <div className="proc-cat-icon">{p.icon}</div>
+                <div className={`proc-cat-title ${p.titleClass}`}>{p.title}</div>
+                <div className="proc-cat-desc">{p.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="proc-list">
+            {[
+              { title: "Petites Créances", desc: "Cour du Québec | Quelques mois | Formulaire de demande, preuves | Faible (frais de dépôt)" },
+              { title: "Recours Civil Standard", desc: "Cour du Québec | 1-2 ans | Demande introductive, moyens de preuve | Moyen (frais de dépôt, huissier)" },
+              { title: "Recours Civil Complexe", desc: "Cour Supérieure | 2-5 ans | Actes de procédure, interrogatoires | Élevé (expertise, honoraires)" },
+              { title: "Garde d'Enfants / Pension", desc: "Cour du Québec / Cour Supérieure | 6 mois - 1 an | Déclaration sous serment, preuves de revenus | Moyen" },
+              { title: "Divorce / Séparation", desc: "Cour Supérieure | 1-3 ans | Contrat de mariage, bilans financiers | Élevé" },
+              { title: "Défense Criminelle", desc: "Cour du Québec (Criminel) | Quelques mois - 2 ans | Divulgation de la preuve, dépositions | Variable (selon gravité)" },
+              { title: "Accusations Simples", desc: "Cour du Québec (Criminel) | Quelques mois | Rapports de police | Moyen" },
+              { title: "Protection de la Jeunesse", desc: "Chambre de la Jeunesse | Quelques semaines - 1 an | Rapports DPJ, évaluation psychosociale | Faible (souvent via Aide Juridique)" },
+              { title: "Délinquance Juvénile", desc: "Chambre de la Jeunesse | Quelques mois | Rapports d'enquête, antécédents | Variable" },
+              { title: "Contestation de Décision", desc: "Tribunal Administratif du Québec (TAQ) | 6 mois - 1 an | Décision contestée, preuves | Faible (frais de dépôt)" },
+              { title: "Appel Civil / Criminel", desc: "Cour d'Appel du Québec | 1-3 ans | Mémoire d'appel, jugement de 1ère instance | Élevé" },
+              { title: "Saisie de Biens / Salaires", desc: "Cour du Québec | Quelques semaines | Jugement, bref d'exécution | Moyen (frais d'huissier)" },
+              { title: "Médiation", desc: "Médiateur accrédité | Quelques jours - semaines | Protocole d'entente | Variable (honoraires médiateur)" },
+              { title: "Arbitrage", desc: "Arbitre | Quelques semaines - mois | Convention d'arbitrage, sentence arbitrale | Élevé" },
+              { title: "Litige Locatif", desc: "Tribunal Administratif du Logement (TAL) | Quelques semaines - mois | Bail, avis, correspondance | Faible (frais de dépôt)" },
+            ].map((p, i) => (
+              <div className="proc-item" key={i}>
+                <div className="proc-item-num">{i + 1}</div>
+                <div>
+                  <div className="proc-item-title">{p.title}</div>
+                  <div className="proc-item-desc">{p.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── PROCÉDURES DÉPOSABLES ── */}
+      <div className="section">
+        <h2>📬 Procédures Déposables à la Cour — Comment &amp; Quand</h2>
+        <p className="section-intro">Ces procédures peuvent être déposées directement au greffe du tribunal compétent.</p>
+        <div className="depo-grid">
+          {[
+            { icon: "📝", title: "Rétractation de Jugement", desc: "Annuler ou modifier un jugement déjà rendu." },
+            { icon: "👶", title: "Modification de Garde", desc: "Modifier les modalités de garde selon les changements de circonstances." },
+            { icon: "✉️", title: "Mise en Demeure", desc: "Lettre formelle exigeant l'exécution d'une obligation." },
+            { icon: "🔍", title: "Demande de Révision", desc: "Faire réexaminer une décision par l'instance concernée." },
+            { icon: "⏸️", title: "Requête en Suspension", desc: "Suspendre temporairement l'exécution d'une décision." },
+            { icon: "↗️", title: "Appel", desc: "Demander à une juridiction supérieure de revoir un jugement." },
+            { icon: "⚖️", title: "Pourvoi en Cassation", desc: "Contester une décision pour erreur de droit." },
+          ].map((d, i) => (
+            <div className="depo-card" key={i}>
+              <div className="depo-icon">{d.icon}</div>
+              <div className="depo-title">{d.title}</div>
+              <div className="depo-desc">{d.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table className="proc-table">
+            <thead>
+              <tr>
+                <th>Procédure</th>
+                <th>Description brève</th>
+                <th>Délai</th>
+                <th>Documents requis</th>
+                <th>Coût estimé</th>
+                <th>Comment la déposer</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { title: "Rétractation de jugement", cls: "td-title", desc: "Demande pour annuler ou corriger un jugement déjà rendu.", delai: "Quelques jours à quelques mois", docs: "Demande, affidavits, pièces justificatives, copie du jugement.", cout: "Faible à moyen", comment: "Déposer au greffe du tribunal ayant rendu le jugement, puis signifier à la partie adverse." },
+                { title: "Modification de Garde", cls: "td-title blue", desc: "Demande pour changer les modalités de garde.", delai: "Quelques mois à 1 an", docs: "Demande, affidavit, projet d'ordonnance, copie du jugement initial.", cout: "Moyen", comment: "Déposer au greffe de la Cour du Québec ou de la Cour Supérieure selon le dossier, puis signifier à l'autre parent." },
+                { title: "Mise en Demeure", cls: "td-title green", desc: "Lettre formelle exigeant l'exécution d'une obligation avant recours judiciaire.", delai: "24 h à 10 jours selon la situation", docs: "Lettre datée, preuves à l'appui, contrat ou factures selon le cas.", cout: "Faible", comment: "Envoyer par huissier, courrier recommandé ou en main propre avec preuve de réception." },
+                { title: "Demande de Révision", cls: "td-title pink", desc: "Demande pour réexaminer une décision administrative ou judiciaire.", delai: "Selon les délais prescrits", docs: "Formulaire, copie de la décision, preuves et arguments.", cout: "Faible à moyen", comment: "Déposer auprès de l'instance concernée, souvent par dépôt direct ou courrier recommandé." },
+                { title: "Requête en Suspension", cls: "td-title", desc: "Demande pour suspendre temporairement l'exécution d'une décision.", delai: "Urgent à quelques semaines", docs: "Requête, affidavit, copie de la décision visée.", cout: "Moyen", comment: "Déposer au tribunal compétent et signifier à la partie adverse." },
+                { title: "Appel", cls: "td-title blue", desc: "Procédure pour faire réviser un jugement par une cour supérieure.", delai: "Souvent 30 jours", docs: "Avis d'appel, jugement contesté, mémoire d'appel, procuration.", cout: "Élevé", comment: "Déposer l'avis d'appel au greffe de la Cour d'Appel et le signifier à toutes les parties." },
+                { title: "Pourvoi en Cassation", cls: "td-title green", desc: "Recours pour faire annuler une décision pour erreur de droit.", delai: "Quelques semaines à quelques mois", docs: "Demande de pourvoi, décision contestée, mémoire, pièces utiles.", cout: "Élevé", comment: "Déposer selon les règles de la juridiction suprême compétente, puis signifier aux parties." },
+              ].map((row, i) => (
+                <tr key={i}>
+                  <td><span className={row.cls}>{row.title}</span></td>
+                  <td>{row.desc}</td>
+                  <td>{row.delai}</td>
+                  <td>{row.docs}</td>
+                  <td>{row.cout}</td>
+                  <td>{row.comment}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── LOIS & CODES ── */}
+      <div className="section-dark">
+        <div className="section">
+          <h2>📚 Lois & Codes — Recherche Intelligente par Domaine</h2>
+          <p className="section-intro">Explorez une référence complète des domaines juridiques clés, organisée pour une recherche facile et une compréhension rapide.</p>
+          <div className="laws-list">
+            {[
+              { title: "LPJ — Loi sur la Protection de la Jeunesse", domain: "Protection de la jeunesse, droit de la famille, intervention sociale", articles: ["Art. 31 LPJ (Situations de compromission)", "Art. 32 LPJ (Droits des parents et enfants)", "Art. 82 LPJ (Mesures de protection)", "Art. 91 et ss. LPJ (Ordonnances du tribunal)"] },
+              { title: "Charte des droits et libertés de la personne", domain: "Droits fondamentaux, égalité, vie privée, discrimination", articles: ["Art. 1 CDLQ (Droit à la vie, sécurité, intégrité, liberté)", "Art. 10 CDLQ (Droit à l'égalité, interdiction de discrimination)", "Art. 33 CDLQ (Droit à la vie privée)", "Art. 49 CDLQ (Droit à la réparation)"] },
+              { title: "Code criminel", domain: "Infractions criminelles, poursuites, peines", articles: ["Art. 222 CCF (Homicide coupable)", "Art. 264.1 CCF (Harcèlement criminel)", "Art. 322 CCF (Vol)", "Art. 348 CCF (Introduction par effraction)"] },
+              { title: "Code de procédure civile (CPC)", domain: "Procédure judiciaire civile, litiges, exécution des jugements", articles: ["Art. 1 CPC (Principes directeurs)", "Art. 145 et ss. CPC (Moyens préliminaires)", "Art. 250 et ss. CPC (Interrogatoires)", "Art. 531 et ss. CPC (Exécution des jugements)"] },
+              { title: "Code de procédure pénale (CPP)", domain: "Infractions pénales, poursuites, comparution, preuve", articles: ["Art. 495 CPP (Arrestation sans mandat)", "Art. 515 CPP (Mise en liberté)", "Art. 650 CPP (Présence de l'accusé)", "Art. 686 CPP (Pouvoirs de la Cour d'appel)"] },
+              { title: "Loi sur le droit du travail", domain: "Normes du travail, salaire, congés, conditions minimales", articles: ["Art. 40 LNT (Salaire minimum)", "Art. 52 LNT (Heures de travail)", "Art. 69 LNT (Congés fériés)", "Art. 81.1 LNT (Congés parentaux)"] },
+              { title: "Loi sur le droit de la famille", domain: "Mariage, séparation, divorce, garde, pension alimentaire", articles: ["Art. 515 CC (Cohabitation, séparation de corps)", "Art. 585 CC (Pension alimentaire pour enfants)", "Art. 433 CC (Patrimoine familial)", "Art. 471 CC (Divorce)"] },
+              { title: "Loi sur le logement", domain: "Baux, loyer, entretien, éviction, relations locateur-locataire", articles: ["Art. 1851 CC (Définition du bail)", "Art. 1860 CC (Obligations du locataire)", "Art. 1864 CC (Troubles de jouissance)", "Art. 1959 CC (Reprise de logement)"] },
+              { title: "Loi sur la consommation", domain: "Protection du consommateur, contrats, garanties, commerce", articles: ["Art. 8 LPC (Garantie légale)", "Art. 54 LPC (Contrats à distance)", "Art. 215 LPC (Pratiques interdites)", "Art. 253 LPC (Recours du consommateur)"] },
+              { title: "Loi sur les infractions routières", domain: "Circulation routière, contraventions, points d'inaptitude, permis", articles: ["Art. 330 LIR (Vitesse excessive)", "Art. 335 LIR (Conduite avec les facultés affaiblies)", "Art. 367 LIR (Points d'inaptitude)", "Art. 384 LIR (Suspension de permis)"] },
+              { title: "Loi administrative", domain: "Droit administratif, accès à l'information, décisions administratives, vie privée", articles: ["Art. 9 LAI (Droit d'accès aux documents)", "Art. 28 LAI (Restrictions au droit d'accès)", "Art. 53 LAI (Protection des renseignements personnels)", "Art. 124 LAI (Plainte à la Commission d'accès)"] },
+            ].map((l, i) => (
+              <div className="law-card" key={i}>
+                <div className="law-num">{i + 1}</div>
+                <div style={{ flex: 1 }}>
+                  <div className="law-title">{l.title}</div>
+                  <div className="law-domain">Domaine : {l.domain}</div>
+                  <div className="law-articles-title">Articles clés :</div>
+                  <ul className="law-articles">
+                    {l.articles.map((a, j) => <li key={j}>{a}</li>)}
+                  </ul>
+                  <span className="law-link">Recherche IA : Consulter la loi et lancer une recherche →</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="tip-banner">ℹ️ Astuce : Pour une recherche plus rapide, copiez un article clé ou un mot-clé précis dans la barre de recherche IA ci-dessus.</div>
+        </div>
+      </div>
+
+      {/* ── RECHERCHE IA ── */}
+      <div className="section">
+        <h2 className="pink">🔍 Recherche IA des Lois &amp; Articles</h2>
+        <p className="section-intro">Trouvez instantanément les informations légales dont vous avez besoin. Notre moteur de recherche alimenté par l'IA analyse des milliers d'articles de loi pour vous donner des réponses précises et compréhensibles.</p>
+        <div className="search-section">
+          <span className="search-label">⊙ Entrez votre requête :</span>
+          <input
+            className="search-input"
+            placeholder={'Tapez ici votre recherche, ex: "modification de garde", "divorce", "contrat de travail"...'}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleSearch()}
+          />
+          <button className="search-btn" onClick={() => handleSearch()}>Lancer la recherche</button>
+        </div>
+
+        <div className="popular-title">Recherches Populaires</div>
+        <div className="popular-tags">
+          {popularSearches.map((tag, i) => (
+            <span key={i} className="popular-tag" onClick={() => { setSearchQuery(tag); handleSearch(tag); }}>{tag.toUpperCase()}</span>
+          ))}
+        </div>
+
+        {searchResult && (
+          <>
+            <div className="results-title">Résultats Pertinents</div>
+            <div className="results-grid">
+              {searchResult.map((r, i) => (
+                <div className="result-card" key={i}>
+                  <div className="result-art">{r.art} {r.title && `— ${r.title}`}</div>
+                  {r.text && <>
+                    <div className="result-text-label">Texte légal :</div>
+                    <div className="result-text">« {r.text} »</div>
+                  </>}
+                  {r.simple && <>
+                    <div className="result-simple-label">Explication simple :</div>
+                    <div className="result-simple">{r.simple}</div>
+                  </>}
+                  {r.text && <button className="consult-btn">Consulter un avocat</button>}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ── FOOTER CTA ── */}
+      <div className="footer-cta">
+        <h2>Prêt à prendre le contrôle de votre dossier ?</h2>
+        <p>Rejoignez des milliers de Québécois qui utilisent JusticePro pour défendre leurs droits.</p>
+        <button className="cta-btn">Commencer maintenant — C'est gratuit</button>
+      </div>
+
+      <footer>
+        <p>© 2026 JusticePro Québec. Tous droits réservés. Ce site fournit de l'information juridique générale et ne constitue pas un avis juridique professionnel.</p>
+      </footer>
+    </>
+  );
 }
